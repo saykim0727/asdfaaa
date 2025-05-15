@@ -8,13 +8,16 @@ class Defact:
 
   def __init__(self):
     if not os.path.exists("logs"):
-      os.makedirs("logs")
+      os.mkdir("logs")
 
     self.url = input("[!] URL을 입력하세요: ")
     if not self.url.startswith("https"):
       self.url = "https://" + self.url
 
-    self.init_data, self.init_data_md5hash = self.getData()
+    init_data, self.init_data_md5hash = self.getData()
+    with open("logs/init.data","w") as f:
+      f.write(init_data)
+
     print("[-] 현재 상태를 기준으로 위변조를 확인합니다")
   
   def diffData(self):
@@ -25,8 +28,6 @@ class Defact:
     else:
       print("[X] 웹 사이트의 변경된 부분이 존재합니다.")
       print(f"    logs/diff_{time}.txt를 참조하여 변경된 부분을 확인하세요.")
-      with open("logs/init.data","w") as f:
-        f.write(self.init_data)
       with open(f"logs/data_{time}","w") as f:
         f.write(data)
       os.system(f"diff logs/init.data logs/data_{time} > logs/diff_{time}.txt")
